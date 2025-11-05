@@ -19,8 +19,12 @@ class ApiHandler:
 
     def fetch_location(self, lat: float, lon: float):
         params = {"lat": lat, "lon": lon, "appid": self.api_key}
-        geo_response = requests.get(self.geo_url, params)
-        geo_data = geo_response.json()[0]
+        response = requests.get(self.geo_url, params)
+
+        if response.status_code != 200:
+            raise RuntimeError(f'API Error: {response.status_code} - {response.text}')
+
+        geo_data = response.json()[0]
 
         return geo_data
 
@@ -42,8 +46,8 @@ class ApiHandler:
             geo_data = self.fetch_location(lat, lon)
 
         final_payload = {
-            'location': geo_data.get('name', {}),
-            'country': geo_data.get('country', {}),
+            'location': geo_data.get('name', None),
+            'country': geo_data.get('country', None),
             'lon': data['coord']['lon'],
             'lat': data['coord']['lat'],
             'aqi': entry['main']['aqi'],
@@ -87,8 +91,8 @@ class ApiHandler:
             geo_data = self.fetch_location(lat, lon)
 
         final_payload = {
-            'location': geo_data.get('name', {}),
-            'country': geo_data.get('country', {}),
+            'location': geo_data.get('name', None),
+            'country': geo_data.get('country', None),
             'lon': air_status['lon'],
             'lat': air_status['lat'],
             'aqi': air_status['aqi'],
