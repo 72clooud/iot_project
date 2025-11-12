@@ -19,7 +19,7 @@ class ApiHandler:
 
     def fetch_location(self, lat: float, lon: float):
         params = {"lat": lat, "lon": lon, "appid": self.api_key}
-        response = requests.get(self.geo_url, params)
+        response = requests.get(self.geo_url, params=params)
 
         if response.status_code != 200:
             raise RuntimeError(f'API Error: {response.status_code} - {response.text}')

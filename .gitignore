@@ -1,3 +1,14 @@
 .venv
 .env 
 test.ipynb
+__pycache__
+*.pyc
+
+local.settings.json
+
+__pycache__/
+.python_packages/
+
+.vscode/settings.json
+.vscode/*.log
+.vscode
