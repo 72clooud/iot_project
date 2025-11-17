@@ -28,9 +28,12 @@ class AzureIotHubSender:
     def send_telemetry_message(self, data_dict: dict) -> bool:
         data_json = json.dumps(data_dict)
         message = Message(data=data_json, content_type="application/json")
+        message.content_type = "application/json"
+        message.content_encoding = "utf-8"
         try:
             self.client.send_message(message)
             return True
         except Exception as e:
             print(f'Error while sending a message - error: {e}')
             return False
+        

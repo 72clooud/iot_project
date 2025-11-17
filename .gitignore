@@ -11,4 +11,6 @@ __pycache__/
 
 .vscode/settings.json
 .vscode/*.log
+
+device_simulator/main.py
 .vscode

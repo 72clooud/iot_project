@@ -1,0 +1,4 @@
+requests
+azure-iot-device
+azure-cosmos
+python-dotenv
