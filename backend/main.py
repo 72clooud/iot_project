@@ -1,6 +1,4 @@
 import logging
-import base64
-import json
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, Request, HTTPException
@@ -34,13 +32,11 @@ def get_db_handler(request: Request) -> AzureCosmosdbHandler:
 def read_root():
     return {'status': 'OK'}
 
-@app.get('/telemetry')
+@app.get('/telemetry', response_model=TelemetryModel)
 def get_telemetry(lat: float, lon: float, db_handler = Depends(get_db_handler)):
     try:
-        results_raw = db_handler.get_file(lat=lat, lon=lon)
-        results_encoded = base64.b64decode(results_raw).decode('utf-8')
-        results_json = json.loads(results_encoded)
-        return results_json
+        results = db_handler.get_file(lat=lat, lon=lon)
+        return results
     except ResourceNotFoundError:
         logging.warning(f"Telemetry not found for lat={lat}, lon={lon}")
         raise HTTPException(status_code=404, detail="Telemetry not found")

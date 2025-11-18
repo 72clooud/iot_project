@@ -32,6 +32,7 @@ class AzureIotHubSender:
         message.content_encoding = "utf-8"
         try:
             self.client.send_message(message)
+            print("Message successfully sent")
             return True
         except Exception as e:
             print(f'Error while sending a message - error: {e}')
