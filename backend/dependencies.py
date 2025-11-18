@@ -1,4 +1,4 @@
-import os
+import numpy as np
 from dotenv import load_dotenv
 from azure.cosmos import CosmosClient
 from azure.core.exceptions import ResourceNotFoundError
@@ -6,9 +6,9 @@ from azure.core.exceptions import ResourceNotFoundError
 load_dotenv()
 
 class AzureCosmosdbHandler:
-    def __init__(self, db: str, container: str):
+    def __init__(self, db: str, container: str, conn_str: str):
         try:
-            self.cosmosdb_client = CosmosClient.from_connection_string(conn_str=os.getenv('AZURE_COSMOSDB_CONNECTION_STRING'))
+            self.cosmosdb_client = CosmosClient.from_connection_string(conn_str=conn_str)
             self.db = self.cosmosdb_client.get_database_client(database=db)
             self.container = self.db.get_container_client(container=container)
             print(f'Succesful connect to container: {container}')
@@ -16,7 +16,13 @@ class AzureCosmosdbHandler:
             print(f'Error: {e}') 
 
     def get_file(self, lat: float, lon: float):
-        query = "SELECT * FROM c WHERE c.Body.lat = @lat AND c.Body.lon = @lon"
+        query = """
+            SELECT TOP 1 * FROM c 
+            ORDER BY ST_DISTANCE(
+                {'type': 'Point', 'coordinates': [c.Body.lon, c.Body.lat]}, 
+                {'type': 'Point', 'coordinates': [@lon, @lat]}
+            ) ASC
+        """
 
         params = [
             {"name": "@lat", "value": lat},
