@@ -1,7 +1,14 @@
-from pydantic import BaseModel, Field
-from datetime import datetime
+from pydantic import BaseModel, Field, ConfigDict
+
+class CoordinatesGeoJSON(BaseModel):
+    type: str = "Point"
+    coordinates: list[float]
 
 class TelemetryModel(BaseModel):
+    model_config = ConfigDict(
+        validate_by_name=True,
+        from_attributes=True
+    )
     location: str
     country: str
     lon: float
@@ -16,5 +23,5 @@ class TelemetryModel(BaseModel):
     pm10: float
     nh3: float
     uv_index: float
-    time: datetime
-    
+    time: str
+    coordinates_geojson: CoordinatesGeoJSON

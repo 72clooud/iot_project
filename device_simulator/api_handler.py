@@ -42,6 +42,9 @@ class ApiHandler:
 
         self._convert_int_to_date('dt', entry)
 
+        lon_val = data.get('coord', {}).get('lon', lon)
+        lat_val = data.get('coord', {}).get('lat', lat)
+
         if enable_location:
             geo_data = self.fetch_location(lat, lon)
 
@@ -52,7 +55,11 @@ class ApiHandler:
             'lat': data['coord']['lat'],
             'aqi': entry['main']['aqi'],
             **air_quality_data,
-            'time': entry['dt']
+            'time': entry['dt'],
+            'coordinates_geojson': {
+                "type": "Point",
+                "coordinates": [lon_val, lat_val]
+            }
         }
 
         return final_payload
@@ -71,13 +78,20 @@ class ApiHandler:
         if enable_location:
             geo_data = self.fetch_location(lat, lon)
 
+        lon_val = data.get('lon', lon)
+        lat_val = data.get('lat', lat)
+
         final_payload = {
             'location': geo_data.get('name', {}),
             'country': geo_data.get('country', {}),
             'lon': data['lon'],
             'lat': data['lat'],
             'value': data['value'],
-            'time': data['date']
+            'time': data['date'],
+            'coordinates_geojson': {
+                "type": "Point",
+                "coordinates": [lon_val, lat_val]
+            } 
         }
 
         return final_payload
@@ -89,6 +103,9 @@ class ApiHandler:
 
         if enable_location:
             geo_data = self.fetch_location(lat, lon)
+
+        lon_val = air_status.get('lon', lon)
+        lat_val = air_status.get('lat', lat)
 
         final_payload = {
             'location': geo_data.get('name', None),
@@ -105,7 +122,11 @@ class ApiHandler:
             "pm10": air_status['pm10'],
             "nh3": air_status['nh3'],
             'uv_index': uv_index['value'],
-            'time': air_status['time']
+            'time': air_status['time'],
+            'coordinates_geojson': {
+                "type": "Point",
+                "coordinates": [lon_val, lat_val]
+            }
         }
 
         return final_payload

@@ -17,11 +17,8 @@ class AzureCosmosdbHandler:
 
     def get_file(self, lat: float, lon: float):
         query = """
-            SELECT TOP 1 * FROM c 
-            ORDER BY ST_DISTANCE(
-                {'type': 'Point', 'coordinates': [c.Body.lon, c.Body.lat]}, 
-                {'type': 'Point', 'coordinates': [@lon, @lat]}
-            ) ASC
+            SELECT TOP 1 c FROM c 
+            ORDER BY ST_DISTANCE(c.coordinates_geojson, {'type': 'Point', 'coordinates': [@lon, @lat]}) ASC
         """
 
         params = [
@@ -38,5 +35,6 @@ class AzureCosmosdbHandler:
         if not items:
             raise ResourceNotFoundError(f"No item found for lat={lat}, lon={lon}")
 
-        return items[0]['Body']
+        full_document = items[0]['c']
+        return full_document['Body']
     
