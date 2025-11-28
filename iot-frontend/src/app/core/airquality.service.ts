@@ -12,12 +12,19 @@ export class AirqualityService {
 
   constructor(private http: HttpClient) { }
 
-  getAirQuality(lat: number, lng: number): Observable<AqiData> {
+getAirQuality(lat: number, lng: number): Observable<AqiData> {
 
-    const params = new HttpParams()
-      .set('lat', lat.toString())
-      .set('lon', lng.toString());
+  const params = new HttpParams()
+    .set('lat', lat.toString())
+    .set('lon', lng.toString());
 
-    return this.http.get<AqiData>(this.apiUrl, { params });
-  }
+  // 1. Poprawiony przecinek
+  // 2. Użycie .toString(), żeby widzieć gotowy format URL (np. "lat=52&lon=21")
+  console.log("Wysyłam parametry:", params.toString()); 
+  
+  // Opcjonalnie możesz wyświetlić surowe wartości:
+  console.log(`Surowe dane: Latitude=${lat}, Longitude=${lng}`);
+
+  return this.http.get<AqiData>(this.apiUrl, { params });
+}
 }

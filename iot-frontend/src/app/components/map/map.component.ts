@@ -17,8 +17,6 @@ export class MapComponent implements AfterViewInit{
     @Output() hasClicked = new EventEmitter<Geolocation>();
 
     
-
-
     ngAfterViewInit(): void {
     this.initMap();
     }
