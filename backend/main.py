@@ -46,7 +46,7 @@ def get_db_handler(request: Request) -> AzureCosmosdbHandler:
 def read_root():
     return {'status': 'OK'}
 
-@app.get('/telemetry', response_model=TelemetryModel)
+@app.get('/telemetry')
 def get_telemetry(lat: float, lon: float, db_handler = Depends(get_db_handler)):
     try:
         results = db_handler.get_file(lat=lat, lon=lon)
