@@ -1,0 +1,4 @@
+<app-map (hasClicked)="onMapClicked($event)"></app-map>
+
+<app-drawer [visible]="drawerVisible" (closed)="closeDrawer()" [data]="drawerData"
+  [isLoading]="isLoading"></app-drawer>

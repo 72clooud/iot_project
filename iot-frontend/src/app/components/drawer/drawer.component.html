@@ -1,0 +1,73 @@
+<p-drawer [visible]="visible" position="right" header="Szczegóły Jakości Powietrza" [modal]="false" [closable]="true" (onHide)="onClose()">
+    
+    <div *ngIf="isLoading" class="flex justify-content-center align-items-center h-full">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    </div>
+
+    <div *ngIf="!isLoading && data as content" class="drawer-content flex flex-column gap-4">
+        
+        <p-card [header]="content.location + ', ' + content.country" subheader="Współrzędne i Czas Danych">
+            
+            <div class="flex flex-column md:flex-row gap-3 mb-4">
+                <p-fieldset legend="Szerokość (Lat)" [toggleable]="false" class="flex-1">
+                    <span class="font-bold text-2xl">{{ content.lat | number:'1.4-4' }}</span><span class="text-secondary">°</span>
+                </p-fieldset>
+                
+                <p-fieldset legend="Długość (Lon)" [toggleable]="false" class="flex-1">
+                    <span class="font-bold text-2xl">{{ content.lon | number:'1.4-4' }}</span><span class="text-secondary">°</span>
+                </p-fieldset>
+            </div>
+
+            <div class="mb-4">
+                 <p-message severity="info" [text]="'Ostatni pomiar: ' + (content.time | date: 'dd/MM/yyyy HH:mm:ss')" styleClass="w-full block"></p-message>
+            </div>
+            
+            <p-divider class="mb-4"></p-divider>
+            
+       <div class="aqi-status-bar-container" [style.--aqi-color]="aqiStatus.color">
+    
+    <div class="flex justify-content-between align-items-center gap-3 "style="margin-bottom: 1.5rem;">
+        
+        <span class="font-bold white-space-nowrap">
+            AQI: {{ content.aqi }}
+        </span>
+        
+        <span [style.color]="aqiStatus.color" class="font-bold text-right ">
+            {{ aqiStatus.text }}
+        </span>
+    </div>
+
+    <p-progressBar 
+        [value]="progressValue" 
+        [showValue]="false" 
+        [style]="{'height': '12px'}" 
+        styleClass="custom-aqi-bar">
+    </p-progressBar>
+</div>
+            
+            <h3 class="mb-3 text-xl font-bold">Wskaźniki AQI</h3>
+            
+            <p-panel header="Szczegółowe Wartości" [toggleable]="true" [collapsed]="false">
+                
+                <div class="flex flex-wrap justify-content-around gap-2 mb-4 custom-badges-container">
+                    <p-badge [value]="'AQI: ' + content.aqi" severity="success" class="custom-badge aqi-badge"></p-badge>
+                    <p-badge [value]="'PM2.5: ' + content.pm2_5" severity="warn" class="custom-badge pm-badge"></p-badge>
+                    <p-badge [value]="'CO: ' + content.co" severity="danger" class="custom-badge co-badge"></p-badge>
+                </div>
+                
+                <p-divider type="dashed" class="mb-4"></p-divider>
+
+                <ul class="list-none p-0 m-0 data-list">
+                    <li class="flex justify-content-between mb-2"><span class="font-bold">NO2: </span> <span class="data-value">{{ content.no2 }}</span></li>
+                    <li class="flex justify-content-between mb-2"><span class="font-bold">O3: </span> <span class="data-value">{{ content.o3 }}</span></li>
+                    <li class="flex justify-content-between mb-2"><span class="font-bold">SO2: </span> <span class="data-value">{{ content.so2 }}</span></li>
+                    <li class="flex justify-content-between mb-2"><span class="font-bold">NH3: </span> <span class="data-value">{{ content.nh3 }}</span></li>
+                    <li class="flex justify-content-between"><span class="font-bold">UV Index: </span> <span class="data-value">{{ content.uv_index }}</span></li>
+                </ul>
+
+            </p-panel>
+
+        </p-card>
+
+
+    </div> </p-drawer>

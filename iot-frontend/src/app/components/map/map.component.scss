@@ -1,0 +1,28 @@
+.map {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: fixed; /* ← kluczowe! */
+  top: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.instruction-overlay {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 1000;
+  pointer-events: none; 
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease;
+}

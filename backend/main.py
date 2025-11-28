@@ -1,5 +1,6 @@
 import logging
 
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, Request, HTTPException
 from azure.core.exceptions import ResourceNotFoundError
@@ -24,6 +25,19 @@ async def lifespan(app: FastAPI):
         raise e
 
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db_handler(request: Request) -> AzureCosmosdbHandler:
     return request.app.state.db_handler
