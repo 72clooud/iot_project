@@ -18,13 +18,16 @@ getAirQuality(lat: number, lng: number): Observable<AqiData> {
     .set('lat', lat.toString())
     .set('lon', lng.toString());
 
-  // 1. Poprawiony przecinek
-  // 2. Użycie .toString(), żeby widzieć gotowy format URL (np. "lat=52&lon=21")
   console.log("Wysyłam parametry:", params.toString()); 
   
-  // Opcjonalnie możesz wyświetlić surowe wartości:
   console.log(`Surowe dane: Latitude=${lat}, Longitude=${lng}`);
 
   return this.http.get<AqiData>(this.apiUrl, { params });
 }
+
+searchLocation(query:string):Observable<any[]>{
+  return this.http.get<any[]>(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+
+}
+
 }

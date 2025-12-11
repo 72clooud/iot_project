@@ -10,9 +10,22 @@
   overflow: hidden;
 }
 
+.search-container {
+  position: fixed;
+  top: 20px;        /* Pasek jest na samej górze */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;     /* Szerokość paska */
+  z-index: 1001;    /* Musi być wyżej niż overlay i mapa */
+  
+  /* Opcjonalnie: cień dla lepszej widoczności */
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+/* --- Twoja instrukcja z jedną zmianą --- */
 .instruction-overlay {
   position: fixed;
-  top: 20px;
+  top: 80px;        /* ZMIANA: Przesunąłem z 20px na 80px, żeby był POD paskiem */
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.65);

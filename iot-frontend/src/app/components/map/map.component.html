@@ -1,6 +1,20 @@
 
   <div #mapElement class="map"></div>
 
+<div class="search-container">
+  <p-autoComplete 
+    [(ngModel)]="selectedCity" 
+    [suggestions]="filteredCities" 
+    (completeMethod)="search($event)" 
+    (onSelect)="onCitySelect($event)"
+    field="display_name" 
+    placeholder="Wpisz miasto (np. Poznań)..."
+    [style]="{'width':'100%'}"
+    [inputStyle]="{'width':'100%', 'border-radius': '30px', 'padding-left': '20px'}"
+    appendTo="body">
+  </p-autoComplete>
+</div>
+
   <div class="instruction-overlay">
   👁️ Kliknij w dowolne miejsce na mapie, aby sprawdzić jakość powietrza
 </div>

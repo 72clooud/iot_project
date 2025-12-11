@@ -37,20 +37,20 @@ export class DrawerComponent {
         if (changes['data'] && this.data) {
             this.aqiStatus = this.getAqiStatus(this.data.aqi); 
             
-             this.progressValue = Math.min((this.data.aqi / 300) * 100, 100);
+             this.progressValue = Math.min(this.data.aqi*20 , 100);
         }
     }
 
     getAqiStatus(aqiValue: number): AqiStatus {
-    if (aqiValue <= 50) {
+    if (aqiValue <= 1) {
         return { text: 'Bardzo Dobra', severity: 'success', color: '#4CAF50' }; 
-    } else if (aqiValue <= 100) {
+    } else if (aqiValue <= 2) {
         return { text: 'Umiarkowana', severity: 'warning', color: '#BDB76B' }; 
-    } else if (aqiValue <= 150) {
+    } else if (aqiValue <= 3) {
         return { text: 'Niezdrowa dla Wrażliwych', severity: 'danger', color: '#FF9800' }; 
-    } else if (aqiValue <= 200) {
+    } else if (aqiValue <= 4) {
         return { text: 'Niezdrowa', severity: 'danger', color: '#F44336' };
-    } else if (aqiValue <= 300) {
+    } else if (aqiValue <= 5) {
         return { text: 'Bardzo Niezdrowa', severity: 'danger', color: '#9C27B0' };
     } else {
         return { text: 'NIEBEZPIECZNA (Alarm)', severity: 'danger', color: '#795548' }; 
