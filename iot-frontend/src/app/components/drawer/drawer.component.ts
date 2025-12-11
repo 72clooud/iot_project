@@ -33,12 +33,21 @@ export class DrawerComponent {
     aqiStatus: AqiStatus = { text: '', severity: '', color: '' };
     progressValue:number=0;
 
+    parsedDate: Date | null = null;
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data'] && this.data) {
             this.aqiStatus = this.getAqiStatus(this.data.aqi); 
             
              this.progressValue = Math.min(this.data.aqi*20 , 100);
+
+             if (this.data.timestamp) {
+            const isoString = this.data.timestamp.replace(' ', 'T').replace(' UTC', 'Z');
+            this.parsedDate = new Date(isoString);
         }
+        }
+
+        
     }
 
     getAqiStatus(aqiValue: number): AqiStatus {

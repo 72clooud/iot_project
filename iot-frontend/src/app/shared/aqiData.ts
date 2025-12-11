@@ -13,5 +13,5 @@ export interface AqiData {
   pm10: number;
   nh3: number;
   uv_index: number;
-  time: string;
+  timestamp: string;
 }

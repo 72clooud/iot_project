@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MapComponent } from "../../components/map/map.component";
 import { DrawerComponent } from "../../components/drawer/drawer.component";
-import { ApiSimulationService } from '../../core/api-simulation.service';
 import { AqiData } from '../../shared/aqiData';
 import { AirqualityService } from '../../core/airquality.service';
 @Component({
