@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timezone
 import os
 import requests
+import pandas as pd
 
 load_dotenv()
 
@@ -11,6 +12,8 @@ class ApiHandler:
         self.air_url = "https://api.openweathermap.org/data/2.5/air_pollution"
         self.uv_url = "https://api.openweathermap.org/data/2.5/uvi"
         self.geo_url = "http://api.openweathermap.org/geo/1.0/reverse"
+        path = "../data/polish_cities_with_coordinates.parquet"
+        self.cities_path = path if os.path.exists(path) else None
 
     def _convert_int_to_date(self, value: str, dictionary: dict) -> None:
             dictionary[value] = datetime.fromtimestamp(
@@ -28,7 +31,7 @@ class ApiHandler:
 
         return geo_data
 
-    def fetch_air_status(self, lat: float, lon: float, enable_location: bool = False) -> dict:
+    def fetch_air_status(self, lat: float, lon: float, location: str, country: str) -> dict:
         params = {"lat": lat, "lon": lon, "appid": self.api_key}
         response = requests.get(self.air_url, params=params)
 
@@ -42,15 +45,9 @@ class ApiHandler:
 
         self._convert_int_to_date('dt', entry)
 
-        lon_val = data.get('coord', {}).get('lon', lon)
-        lat_val = data.get('coord', {}).get('lat', lat)
-
-        if enable_location:
-            geo_data = self.fetch_location(lat, lon)
-
         final_payload = {
-            'location': geo_data.get('name', None),
-            'country': geo_data.get('country', None),
+            'location': location,
+            'country': country,
             'lon': data['coord']['lon'],
             'lat': data['coord']['lat'],
             'aqi': entry['main']['aqi'],
@@ -58,7 +55,7 @@ class ApiHandler:
             'time': entry['dt'],
             'coordinates_geojson': {
                 "type": "Point",
-                "coordinates": [lon_val, lat_val]
+                "coordinates": [lon, lat]
             }
         }
 
