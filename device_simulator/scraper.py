@@ -3,13 +3,12 @@ import requests
 import io
 
 class DataFetch:
-    def __init__(self, amount: int = 190):
+    def __init__(self):    
         self.df = None
         self.url = "https://pl.wikipedia.org/wiki/Dane_statystyczne_o_miastach_w_Polsce"
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        self.amount = amount
 
 
     def get_table(self) -> pd.DataFrame:
@@ -28,22 +27,21 @@ class DataFetch:
             raise ValueError(f"Erorr: {self.df.columns.tolist()}")
 
         self.df = self.df[[col_miasto, col_ludnosc]].copy()
-        self.df.columns = ['Miasto', 'Ludnosc']
+        self.df.columns = ['City', 'Population']
 
-        self.df['Ludnosc'] = (
-            self.df['Ludnosc']
+        self.df['Population'] = (
+            self.df['Population']
             .astype(str)
             .str.replace(r'\D', '', regex=True)
         )
 
-        self.df['Ludnosc'] = pd.to_numeric(self.df['Ludnosc'], errors='coerce').astype(int)
+        self.df['Population'] = pd.to_numeric(self.df['Population'], errors='coerce').astype(int)
 
-        self.df.sort_values(by='Ludnosc', ascending=False, inplace=True, ignore_index=True)
+        self.df.sort_values(by='Population', ascending=False, inplace=True, ignore_index=True)
     
     def get_data(self) -> pd.DataFrame:
         self.get_table()
         self.normalize_data()
-        self.df = self.df[:self.amount]
 
     def save_to_parquet(self, file_path: str) -> None:
         if self.df is not None:
@@ -51,6 +49,6 @@ class DataFetch:
         
 if __name__ == "__main__":
 
-    data_fetcher = DataFetch(amount=190)
+    data_fetcher = DataFetch()
     data_fetcher.get_data()
     data_fetcher.save_to_parquet("../data/polish_cities.parquet")

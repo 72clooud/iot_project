@@ -14,3 +14,5 @@ __pycache__/
 
 device_simulator/main.py
 .vscode
+
+data/*.parquet

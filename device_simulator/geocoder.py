@@ -19,10 +19,10 @@ class GeoDataFetch:
         df['Lon'] = None
 
         for index, row in df.iterrows():
-            city = row['Miasto']
+            city = row['City']
 
             try:
-                location = self.geolocator.geocode(city, timeout=10)
+                location = self.geolocator.geocode(city, country_codes="pl", timeout=10)
 
                 if location:
                     df.at[index, 'Lat'] = location.latitude
