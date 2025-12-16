@@ -11,6 +11,8 @@ class ApiHandler:
         self.air_url = "https://api.openweathermap.org/data/2.5/air_pollution"
         self.uv_url = "https://api.openweathermap.org/data/2.5/uvi"
         self.geo_url = "http://api.openweathermap.org/geo/1.0/reverse"
+        path = "../data/polish_cities_with_coordinates.parquet"
+        self.cities_path = path if os.path.exists(path) else None
 
     def _convert_int_to_date(self, value: str, dictionary: dict) -> None:
             dictionary[value] = datetime.fromtimestamp(
@@ -28,7 +30,7 @@ class ApiHandler:
 
         return geo_data
 
-    def fetch_air_status(self, lat: float, lon: float, enable_location: bool = False) -> dict:
+    def fetch_air_status(self, lat: float, lon: float, location: str, country: str) -> dict:
         params = {"lat": lat, "lon": lon, "appid": self.api_key}
         response = requests.get(self.air_url, params=params)
 
@@ -42,15 +44,9 @@ class ApiHandler:
 
         self._convert_int_to_date('dt', entry)
 
-        lon_val = data.get('coord', {}).get('lon', lon)
-        lat_val = data.get('coord', {}).get('lat', lat)
-
-        if enable_location:
-            geo_data = self.fetch_location(lat, lon)
-
         final_payload = {
-            'location': geo_data.get('name', None),
-            'country': geo_data.get('country', None),
+            'location': location,
+            'country': country,
             'lon': data['coord']['lon'],
             'lat': data['coord']['lat'],
             'aqi': entry['main']['aqi'],
@@ -58,14 +54,14 @@ class ApiHandler:
             'time': entry['dt'],
             'coordinates_geojson': {
                 "type": "Point",
-                "coordinates": [lon_val, lat_val]
+                "coordinates": [lon, lat]
             }
         }
 
         return final_payload
 
 
-    def fetch_uv_index(self, lat: float, lon: float, enable_location: bool = False) -> dict:
+    def fetch_uv_index(self, lat: float, lon: float, location: str, country: str) -> dict:
         params = {"lat": lat, "lon": lon, "appid": self.api_key}
         response = requests.get(self.uv_url, params=params)
 
@@ -75,41 +71,29 @@ class ApiHandler:
         data = response.json()
         self._convert_int_to_date('date', data)
 
-        if enable_location:
-            geo_data = self.fetch_location(lat, lon)
-
-        lon_val = data.get('lon', lon)
-        lat_val = data.get('lat', lat)
-
         final_payload = {
-            'location': geo_data.get('name', {}),
-            'country': geo_data.get('country', {}),
+            'location': location,
+            'country': country,
             'lon': data['lon'],
             'lat': data['lat'],
             'value': data['value'],
             'time': data['date'],
             'coordinates_geojson': {
                 "type": "Point",
-                "coordinates": [lon_val, lat_val]
+                "coordinates": [lon, lat]
             } 
         }
 
         return final_payload
 
 
-    def get_all_data(self, lat: float, lon: float, enable_location: bool = False) -> dict:
-        air_status: dict = self.fetch_air_status(lat, lon, enable_location)
-        uv_index: dict = self.fetch_uv_index(lat, lon, enable_location)
-
-        if enable_location:
-            geo_data = self.fetch_location(lat, lon)
-
-        lon_val = air_status.get('lon', lon)
-        lat_val = air_status.get('lat', lat)
+    def get_all_data(self, lat: float, lon: float, location: str, country: str) -> dict:
+        air_status: dict = self.fetch_air_status(lat, lon, location, country)
+        uv_index: dict = self.fetch_uv_index(lat, lon, location, country)
 
         final_payload = {
-            'location': geo_data.get('name', None),
-            'country': geo_data.get('country', None),
+            'location': location,
+            'country': country,
             'lon': air_status['lon'],
             'lat': air_status['lat'],
             'aqi': air_status['aqi'],
@@ -125,7 +109,7 @@ class ApiHandler:
             'time': air_status['time'],
             'coordinates_geojson': {
                 "type": "Point",
-                "coordinates": [lon_val, lat_val]
+                "coordinates": [lon, lat]
             }
         }
 
